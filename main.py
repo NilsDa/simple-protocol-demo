@@ -70,7 +70,7 @@ def uiButtonClicked(event):
 
 # create global variables
 max_t_ackn = 2
-n_appSG = 29 # number of Application-SG
+n_appSG = 30 # number of Application-SG
 timestep_curr = 0
 out_buff_send_per_time = 10
 f_req = 0.9/n_appSG # average frequency of request (split up over all appSG)
@@ -82,29 +82,7 @@ for i in range(n_appSG):
 
 
 
-
-
-button1 = sg.Button("add new message", key="-ADD MESSAGE-")
-button2 = sg.Button("delete first message", key="-DELETE MESSAGE-")
-# message_names = ["message1", "message2"]
-message_names = PriorityQueue()
-message_names.put((randrange(10), "message1"))
-message_names.put((randrange(10), "message2"))
-num_message = 2
-listbox1 = sg.Listbox(
-            values=getQueueList(message_names.queue), enable_events=True, size=(40,20),
-            key="-MESSAGE LIST-"
-        )
-
-layout = [
-    [sg.Text("Hello Hello. Text 1")],
-    [button1,button2],
-    [listbox1]
-]
-
-
 # create basic layout
-
 button_advance = sg.Button("Advance HMI-SG Timestep", key="-ADVANCE TIMESTEP-")
 text_timestep = sg.Text("current timestep: "+str(timestep_curr), key="-TIMESTEP CURR-")
 listbox_ui = sg.Listbox(
@@ -161,7 +139,6 @@ layout_proto = [
 ]
 
 # create the window
-# window = sg.Window("Window Title",layout)
 window = sg.Window("Protokoll Demo",layout_proto)
 
 
@@ -177,13 +154,6 @@ while True:
         advanceTimeStep()
     elif event == "-UI BUTTON 1-" or event == "-UI BUTTON 2-" or event == "-UI BUTTON 3-":
         uiButtonClicked(event)
-    elif event == "-ADD MESSAGE-":
-        num_message += 1
-        message_names.put((randrange(10), ("message"+str(num_message))))
-        window["-MESSAGE LIST-"].update(getQueueList(message_names.queue))
-    elif event == "-DELETE MESSAGE-":
-        if not message_names.empty():
-            deleted_message = message_names.queue.pop()
-            window["-MESSAGE LIST-"].update(getQueueList(message_names.queue))
 
+# close window
 window.close()
