@@ -1,7 +1,6 @@
 from random import randrange
 
 class request():
-    prio: int
     type = "request"
     user_reaction = ""
     def __init__(self, req_id=-1, sg_id=-1, stamp=0, imaginary_request=False) -> None:

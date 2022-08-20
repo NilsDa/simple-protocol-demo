@@ -1,7 +1,4 @@
-import string
 import PySimpleGUI as sg
-from queue import PriorityQueue
-from random import randrange
 from src.hmiSG import hmiSG
 from src.appSG import appSG
 
@@ -42,37 +39,37 @@ def advanceTimeStep():
 
 
 def uiButtonClicked(event):
-        # do nothing, if there is no current message
-        if hmi_sg.curr_req_msg == "input buffer empty":
-            return
-        
-        # set answer according to which button was pressed
-        if event == "-UI BUTTON 1-":
-            hmi_sg.curr_req.user_reaction = "B1"
-        elif event == "-UI BUTTON 2-":
-            hmi_sg.curr_req.user_reaction = "B2"
-        elif event == "-UI BUTTON 3-":
-            hmi_sg.curr_req.user_reaction = "B3"
-        else:
-            hmi_sg.curr_req.user_reaction = "unknown"
-        
-        # place answer to current message in output buffer
-        hmi_sg.addToOutBuff(hmi_sg.curr_req)
-        window["-OUT BUFF LISTBOX-"].update(hmi_sg.getOutMsgNames())
-        
-        # get next message from input buffer and place it in ui display
-        window["-UI LISTBOX-"].update(["UI Display","currently active request:",hmi_sg.getCurrReqName()])
-        # also update input buffer display
-        window["-IN BUFF LISTBOX-"].update(hmi_sg.getInMsgNames())
+    # do nothing, if there is no current message
+    if hmi_sg.curr_req_msg == "input buffer empty":
+        return
+    
+    # set answer according to which button was pressed
+    if event == "-UI BUTTON 1-":
+        hmi_sg.curr_req.user_reaction = "B1"
+    elif event == "-UI BUTTON 2-":
+        hmi_sg.curr_req.user_reaction = "B2"
+    elif event == "-UI BUTTON 3-":
+        hmi_sg.curr_req.user_reaction = "B3"
+    else:
+        hmi_sg.curr_req.user_reaction = "unknown"
+    
+    # place answer to current message in output buffer
+    hmi_sg.addToOutBuff(hmi_sg.curr_req)
+    window["-OUT BUFF LISTBOX-"].update(hmi_sg.getOutMsgNames())
+    
+    # get next message from input buffer and place it in ui display
+    window["-UI LISTBOX-"].update(["UI Display","currently active request:",hmi_sg.getCurrReqName()])
+    # also update input buffer display
+    window["-IN BUFF LISTBOX-"].update(hmi_sg.getInMsgNames())
 
 
 
 
 # create global variables
 max_t_ackn = 2
-n_appSG = 30 # number of Application-SG
+n_appSG = 9 # number of Application-SG
 timestep_curr = 0
-out_buff_send_per_time = 10
+out_buff_send_per_time = 30
 f_req = 0.9/n_appSG # average frequency of request (split up over all appSG)
 # create SG objects
 hmi_sg = hmiSG(ans_freq=1, max_t_ackn=max_t_ackn)
@@ -86,7 +83,7 @@ for i in range(n_appSG):
 button_advance = sg.Button("Advance HMI-SG Timestep", key="-ADVANCE TIMESTEP-")
 text_timestep = sg.Text("current timestep: "+str(timestep_curr), key="-TIMESTEP CURR-")
 listbox_ui = sg.Listbox(
-    values=["UI Display","currently active request:"], enable_events=True, size=(35,3), key="-UI LISTBOX-"
+    values=["UI Display","currently active request:",hmi_sg.getCurrReqName()], enable_events=True, size=(35,3), key="-UI LISTBOX-"
 )
 button_ui_1 = sg.Button("UI Button 1", key="-UI BUTTON 1-")
 button_ui_2 = sg.Button("UI Button 2", key="-UI BUTTON 2-")
